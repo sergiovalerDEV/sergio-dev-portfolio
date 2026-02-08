@@ -21,11 +21,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: sergio-dev-portfolio/sergio-dev-portfolio/package-lock.json
 
       - name: Install dependencies
         run: npm ci
-        working-directory: sergio-dev-portfolio/sergio-dev-portfolio
+        working-directory: sergio-dev-portfolio
 
       - name: Run tests with coverage
         run: |
@@ -35,7 +34,7 @@ jobs:
             --coverageDirectory=coverage \
             --watchAll=false \
             --passWithNoTests
-        working-directory: sergio-dev-portfolio/sergio-dev-portfolio
+        working-directory: sergio-dev-portfolio
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
@@ -46,7 +45,7 @@ jobs:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
             -Dsonar.projectKey=sergiovalerDEV_sergio-dev-portfolio
-            -Dsonar.projectBaseDir=sergio-dev-portfolio/sergio-dev-portfolio
+            -Dsonar.projectBaseDir=sergio-dev-portfolio
             -Dsonar.sources=src
             -Dsonar.tests=src
             -Dsonar.test.inclusions=**/*.spec.tsx,**/*.test.tsx,**/*.spec.ts,**/*.test.ts
