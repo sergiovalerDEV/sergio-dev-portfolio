@@ -33,8 +33,16 @@ jobs:
         working-directory: sergio-dev-portfolio
 
       - name: SonarCloud Scan
-        run: cd sergio-dev-portfolio && sonar-scanner
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
-        shell: bash
+        with:
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORG }}
+            -Dsonar.projectKey=sergiovalerDEV_sergio-dev-portfolio
+            -Dsonar.sources=sergio-dev-portfolio/src
+            -Dsonar.tests=sergio-dev-portfolio/src
+            -Dsonar.test.inclusions=**/*.spec.tsx,**/*.test.tsx,**/*.spec.ts,**/*.test.ts
+            -Dsonar.typescript.lcov.reportPaths=sergio-dev-portfolio/coverage/lcov.info
+            -Dsonar.exclusions=**/*.scss,**/*.sass,**/*.config.js,**/*.json,**/*.md,**/*.yml,**/*.yaml,**/*.lock,**/node_modules/**
