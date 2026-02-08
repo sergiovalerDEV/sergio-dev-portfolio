@@ -27,13 +27,13 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        run: npm run test:ci  # ← CAMBIO CLAVE: Usa test:ci
+        run: npm test -- --passWithNoTests --coverage --coverageReporters=lcov --coverageDirectory=coverage --watchAll=false
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io  # ← Fix URL
+          SONAR_HOST_URL: https://sonarcloud.io
         with:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
