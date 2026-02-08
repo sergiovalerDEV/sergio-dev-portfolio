@@ -22,18 +22,18 @@ jobs:
 
       - name: Install dependencies (npm install fallback)
         run: npm install --frozen-lockfile || npm ci
-        working-directory: sergio-dev-portfolio/sergio-dev-portfolio
+        working-directory: sergio-dev-portfolio
 
       - name: Run tests with coverage
         run: npx jest --coverage --coverageReporters=lcov --coverageDirectory=coverage --watchAll=false --passWithNoTests
-        working-directory: sergio-dev-portfolio/sergio-dev-portfolio
+        working-directory: sergio-dev-portfolio
 
       - name: Verify coverage
         run: ls -la coverage/lcov.info || echo "Coverage not generated"
-        working-directory: sergio-dev-portfolio/sergio-dev-portfolio
+        working-directory: sergio-dev-portfolio
 
       - name: SonarCloud Scan
-        run: cd sergio-dev-portfolio/sergio-dev-portfolio && sonar-scanner
+        run: cd sergio-dev-portfolio && sonar-scanner
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
