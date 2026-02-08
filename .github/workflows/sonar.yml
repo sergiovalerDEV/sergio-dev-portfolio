@@ -1,3 +1,11 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
@@ -25,16 +33,8 @@ jobs:
         working-directory: sergio-dev-portfolio/sergio-dev-portfolio
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v6
+        run: cd sergio-dev-portfolio/sergio-dev-portfolio && sonar-scanner
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
-        with:
-          args: >
-            -Dsonar.organization=${{ secrets.SONAR_ORG }}
-            -Dsonar.projectKey=sergiovalerDEV_sergio-dev-portfolio
-            -Dsonar.sources=src
-            -Dsonar.tests=src
-            -Dsonar.test.inclusions=**/*.spec.tsx,**/*.test.tsx,**/*.spec.ts,**/*.test.ts
-            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.exclusions=**/*.scss,**/*.sass,**/*.config.js,**/*.json,**/*.md,**/*.yml,**/*.yaml,**/*.lock,**/node_modules/**
+        shell: bash
