@@ -24,7 +24,10 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci --ignore-scripts
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage --coverageReporters=lcov --coverageDirectory=coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
@@ -35,10 +38,8 @@ jobs:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
             -Dsonar.projectKey=sergiovalerDEV_sergio-dev-portfolio
-            -Dsonar.exclusions=**/*.scss,**/*.sass,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx
-            -Dsonar.coverage.exclusions=**/*.scss,**/*.sass,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx
-            -Dsonar.cpd.exclusions=**/*.scss,**/*.sass
-
-      - name: Quality Gate
-        run: |
-          echo "SonarCloud analysis completed successfully!"
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/*.scss,**/*.sass,**/*.test.*,**/*.spec.*,**/node_modules/**,**/*.config.js,**/*.json,**/*.md,**/*.yml
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=**/*.spec.tsx,**/*.test.tsx,**/*.spec.ts,**/*.test.ts
+            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
