@@ -12,3 +12,4 @@ describe('main.tsx', () => {
         expect(document.getElementById('root')).toBeInTheDocument();
     });
 });
+
