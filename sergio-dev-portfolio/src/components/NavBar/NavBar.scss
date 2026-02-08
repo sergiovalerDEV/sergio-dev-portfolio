@@ -1,0 +1,233 @@
+.navbar {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  font-family: $sf-pro-normal;
+  font-weight: $font-weight-normal;
+  font-size: $text-sm;
+  transition: all 0.5s ease;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 100;
+
+  &__left {
+    display: flex;
+    align-items: center;
+  }
+
+  &__logo {
+    height: 40px;
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    transition: all 0.5s ease;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    transition: all 0.5s ease;
+  }
+
+  &__links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 1.5rem;
+    transition: all 0.5s ease;
+
+    li {
+      a {
+        text-decoration: none;
+        color: inherit;
+        -webkit-appearance: none;
+        appearance: none;
+        outline: none;
+        border: none;
+        background: transparent;
+        transition: all 0.5s ease;
+
+        &:link,
+        &:visited,
+        &:focus,
+        &:active {
+          color: inherit;
+          outline: none;
+          box-shadow: none;
+          background: transparent;
+        }
+
+        &:hover {
+          color: $navbar-accent-hover;
+        }
+      }
+    }
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: filter 0.5s ease;
+    margin-left: 1rem;
+    flex-shrink: 0;
+
+    &:hover {
+      filter: brightness(1.2);
+    }
+  }
+
+  // HAMBURGUESA/X PERFECTA
+  &__hamburger {
+    display: none;
+    position: relative;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-right: 1rem;
+    padding: 0;
+    color: inherit;
+    transition: all 0.5s ease;
+
+    &-line {
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      background: currentColor;
+      border-radius: 3px;
+      left: 0;
+      transition: all 0.5s ease;
+
+      &:nth-child(1) {
+        top: 0;
+      }
+
+      &:nth-child(2) {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      &:nth-child(3) {
+        bottom: 0;
+      }
+    }
+  }
+
+  // X MATEMÁTICAMENTE PERFECTA
+  &--open {
+    .navbar__hamburger-line {
+      &:nth-child(1) {
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+      }
+
+      &:nth-child(2) {
+        opacity: 0;
+      }
+
+      &:nth-child(3) {
+        bottom: 50%;
+        transform: translateY(50%) rotate(-45deg);
+      }
+    }
+  }
+
+  // Tema oscuro
+  &--dark {
+    background-color: $navbar-bg-dark;
+    color: $navbar-text-dark;
+    transition: all 0.5s ease;
+
+    &__links a {
+      color: $navbar-text-dark;
+    }
+
+    &__icon {
+      filter: invert(1);
+    }
+
+    &__hamburger {
+      color: $navbar-text-dark;
+    }
+  }
+
+  // Tema claro
+  &--light {
+    background-color: $navbar-bg-light;
+    color: $navbar-text-light;
+    transition: all 0.5s ease;
+
+    &__links a {
+      color: $navbar-text-light;
+    }
+
+    &__icon {
+      filter: none;
+    }
+
+    &__hamburger {
+      color: $navbar-text-light;
+    }
+  }
+
+  // Responsive
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    padding: 1rem 0;
+    transition: all 0.5s ease;
+
+    &__left {
+      width: 100%;
+      justify-content: center;
+      position: relative;
+      transition: all 0.5s ease;
+    }
+
+    &__hamburger {
+      display: block;
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: all 0.5s ease;
+    }
+
+    &__right {
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+
+    &--open .navbar__right {
+      max-height: 400px;
+      opacity: 1;
+    }
+
+    &__links {
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      transition: all 0.5s ease;
+    }
+
+    &__icon {
+      margin: 1.5rem 0 0 0;
+      transition: all 0.5s ease;
+    }
+  }
+}
