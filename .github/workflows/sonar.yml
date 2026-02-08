@@ -27,19 +27,19 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        run: npm test -- --coverage --coverageReporters=lcov --coverageDirectory=coverage
+        run: npm run test:ci  # ← CAMBIO CLAVE: Usa test:ci
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
+          SONAR_HOST_URL: https://sonarcloud.io  # ← Fix URL
         with:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
             -Dsonar.projectKey=sergiovalerDEV_sergio-dev-portfolio
             -Dsonar.sources=src
-            -Dsonar.exclusions=**/*.scss,**/*.sass,**/*.test.*,**/*.spec.*,**/node_modules/**,**/*.config.js,**/*.json,**/*.md,**/*.yml
             -Dsonar.tests=src
             -Dsonar.test.inclusions=**/*.spec.tsx,**/*.test.tsx,**/*.spec.ts,**/*.test.ts
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.exclusions=**/*.scss,**/*.sass,**/*.config.js,**/*.json,**/*.md,**/*.yml,**/*.yaml,**/*.lock,**/node_modules/**
