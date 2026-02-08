@@ -1,6 +1,23 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import React from 'react';
 import { ThemeProvider, useTheme } from './ThemeContext';
+
+const mockLocalStorage = {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    clear: jest.fn(),
+    removeItem: jest.fn()
+};
+
+Object.defineProperty(window, 'localStorage', {
+    value: mockLocalStorage
+});
+
+Object.defineProperty(document.body, 'className', {
+    value: '',
+    writable: true
+});
 
 const TestComponent = () => {
     const { theme, toggleTheme } = useTheme();
@@ -16,11 +33,14 @@ const TestComponent = () => {
 
 describe('ThemeContext', () => {
     beforeEach(() => {
-        localStorage.clear();
+        jest.clearAllMocks();
+        mockLocalStorage.clear();
         document.body.className = '';
     });
 
     it('should initialize with dark theme by default when localStorage is empty', () => {
+        mockLocalStorage.getItem.mockReturnValue(null);
+
         render(
             <ThemeProvider>
                 <TestComponent />
@@ -29,11 +49,12 @@ describe('ThemeContext', () => {
 
         expect(screen.getByTestId('theme-display')).toHaveTextContent('dark');
         expect(document.body.className).toBe('dark');
-        expect(localStorage.getItem('theme')).toBe('dark');
+        expect(mockLocalStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
+        expect(mockLocalStorage.getItem).toHaveBeenCalledWith('theme');
     });
 
     it('should initialize with theme from localStorage when present (light)', () => {
-        localStorage.setItem('theme', 'light');
+        mockLocalStorage.getItem.mockReturnValue('light');
 
         render(
             <ThemeProvider>
@@ -43,10 +64,12 @@ describe('ThemeContext', () => {
 
         expect(screen.getByTestId('theme-display')).toHaveTextContent('light');
         expect(document.body.className).toBe('light');
-        expect(localStorage.getItem('theme')).toBe('light');
+        expect(mockLocalStorage.getItem).toHaveBeenCalledWith('theme');
     });
 
     it('should toggle theme from dark to light', () => {
+        mockLocalStorage.getItem.mockReturnValue(null);
+
         render(
             <ThemeProvider>
                 <TestComponent />
@@ -58,11 +81,11 @@ describe('ThemeContext', () => {
 
         expect(screen.getByTestId('theme-display')).toHaveTextContent('light');
         expect(document.body.className).toBe('light');
-        expect(localStorage.getItem('theme')).toBe('light');
+        expect(mockLocalStorage.setItem).toHaveBeenCalledWith('theme', 'light');
     });
 
     it('should toggle theme from light to dark when starting from light in localStorage', () => {
-        localStorage.setItem('theme', 'light');
+        mockLocalStorage.getItem.mockReturnValue('light');
 
         render(
             <ThemeProvider>
@@ -77,21 +100,20 @@ describe('ThemeContext', () => {
 
         expect(screen.getByTestId('theme-display')).toHaveTextContent('dark');
         expect(document.body.className).toBe('dark');
-        expect(localStorage.getItem('theme')).toBe('dark');
+        expect(mockLocalStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
     });
 
-    it('should update body className and localStorage on theme change', () => {
+    it('should handle invalid localStorage value gracefully', () => {
+        mockLocalStorage.getItem.mockReturnValue('invalid');
+
         render(
             <ThemeProvider>
                 <TestComponent />
             </ThemeProvider>
         );
 
-        const toggleButton = screen.getByTestId('toggle-btn');
-        fireEvent.click(toggleButton);
-
-        expect(document.body.className).toBe('light');
-        expect(localStorage.getItem('theme')).toBe('light');
+        expect(screen.getByTestId('theme-display')).toHaveTextContent('dark');
+        expect(document.body.className).toBe('dark');
     });
 
     it('useTheme should throw error when used outside ThemeProvider', () => {

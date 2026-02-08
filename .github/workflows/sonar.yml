@@ -1,5 +1,4 @@
 name: SonarCloud Analysis
-
 on:
   push:
     branches: [main, develop]
@@ -9,10 +8,8 @@ on:
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -21,23 +18,24 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+        working-directory: sergio-dev-portfolio/sergio-dev-portfolio
 
-      - name: Install dependencies
-        run: npm ci
-        working-directory: sergio-dev-portfolio
+      - name: Install dependencies (npm install fallback)
+        run: |
+          npm install --frozen-lockfile || npm ci
+        working-directory: sergio-dev-portfolio/sergio-dev-portfolio
 
       - name: Run tests with coverage
-        run: |
-          npx jest \
-            --coverage \
-            --coverageReporters=lcov \
-            --coverageDirectory=coverage \
-            --watchAll=false \
-            --passWithNoTests
-        working-directory: sergio-dev-portfolio
+        run: npx jest --coverage --coverageReporters=lcov --coverageDirectory=coverage --watchAll=false --passWithNoTests
+        working-directory: sergio-dev-portfolio/sergio-dev-portfolio
+
+      - name: Verify coverage
+        run: ls -la coverage/lcov.info || echo "Coverage not generated"
+        working-directory: sergio-dev-portfolio/sergio-dev-portfolio
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
+        working-directory: sergio-dev-portfolio/sergio-dev-portfolio
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
@@ -45,9 +43,8 @@ jobs:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
             -Dsonar.projectKey=sergiovalerDEV_sergio-dev-portfolio
-            -Dsonar.projectBaseDir=sergio-dev-portfolio
             -Dsonar.sources=src
             -Dsonar.tests=src
             -Dsonar.test.inclusions=**/*.spec.tsx,**/*.test.tsx,**/*.spec.ts,**/*.test.ts
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.exclusions=**/*.scss,**/*.sass,**/*.config.js,**/*.json,**/*.md,**/*.yml,**/*.yaml,**/*.lock,**/node_modules/**,**/coverage/**
+            -Dsonar.exclusions=**/*.scss,**/*.sass,**/*.config.js,**/*.json,**/*.md,**/*.yml,**/*.yaml,**/*.lock,**/node_modules/**
