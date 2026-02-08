@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -27,7 +28,13 @@ jobs:
         working-directory: sergio-dev-portfolio/sergio-dev-portfolio
 
       - name: Run tests with coverage
-        run: npx jest --coverage --coverageReporters=lcov --coverageDirectory=coverage --watchAll=false --passWithNoTests
+        run: |
+          npx jest \
+            --coverage \
+            --coverageReporters=lcov \
+            --coverageDirectory=coverage \
+            --watchAll=false \
+            --passWithNoTests
         working-directory: sergio-dev-portfolio/sergio-dev-portfolio
 
       - name: SonarCloud Scan
@@ -44,4 +51,4 @@ jobs:
             -Dsonar.tests=src
             -Dsonar.test.inclusions=**/*.spec.tsx,**/*.test.tsx,**/*.spec.ts,**/*.test.ts
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.exclusions=**/*.scss,**/*.sass,**/*.config.js,**/*.json,**/*.md,**/*.yml,**/*.yaml,**/*.lock,**/node_modules/**
+            -Dsonar.exclusions=**/*.scss,**/*.sass,**/*.config.js,**/*.json,**/*.md,**/*.yml,**/*.yaml,**/*.lock,**/node_modules/**,**/coverage/**
